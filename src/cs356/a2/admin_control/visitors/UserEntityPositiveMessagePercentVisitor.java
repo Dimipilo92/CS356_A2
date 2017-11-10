@@ -38,7 +38,7 @@ public class UserEntityPositiveMessagePercentVisitor implements UserEntityVisito
 		if (totalMessages == 0) {
 			return Double.NaN;
 		}
-		return totalPositive/totalMessages;
+		return ((double)(totalPositive)/totalMessages);
 	}
 
 	@Override

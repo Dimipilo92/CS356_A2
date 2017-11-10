@@ -19,33 +19,37 @@ public class AdminControl {
 		return INSTANCE;
 	}
 	
+	public void setRoot (UserGroup group){
+		root = group;
+	}
+	
 	public UserGroup getRoot() {
 		return root;
 	}
 	
-	public void addNewUser(String userName, UserGroup group) throws UserExistsException {
+	public void addNewUser(String userName, UserGroup group)
+			throws UserExistsException {
 		addEntityToGroup(new User(userName), group);
 	}
 	
-	public void addNewUserById(String userName, UUID groupId) throws UserExistsException {
-		UserGroup group = (UserGroup)findEntityById(groupId);
+	public void addNewUserById(String userName, UUID groupId)
+			throws UserExistsException {
+		UserGroup group = (UserGroup)findEntity(groupId);
 		addEntityToGroup(new User(userName), group);
 	}
 	
-	public void addGroup (UserGroup group) throws UserExistsException {
-		addEntityToGroup(group, root);
-	}
-	
-	public void addNewGroup(String groupName, UserGroup group) throws UserExistsException {
+	public void addNewGroup(String groupName, UserGroup group) 
+			throws UserExistsException {
 		addEntityToGroup(new UserGroup(groupName), group);
 	}
 	
-	public void addNewGroupById(String groupName, UUID groupId) throws UserExistsException {
-		UserGroup group = (UserGroup)findEntityById(groupId);
+	public void addNewGroupById(String groupName, UUID groupId) 
+			throws UserExistsException {
+		UserGroup group = (UserGroup)findEntity(groupId);
 		addEntityToGroup(new UserGroup(groupName), group);
 	}
 	
-	private void addEntityToGroup(UserEntity e, UserGroup g) throws UserExistsException {
+	public void addEntityToGroup(UserEntity e, UserGroup g){
 		
 		if (!users.contains(e.getName())) {
 			users.add(e.getName());
@@ -55,23 +59,25 @@ public class AdminControl {
 		}
 		g.addEntity(e);
 	}
-	
-	private UserEntity findEntityById(UUID groupId) {
-		UserEntityFindByIdVisitor findGroup = new UserEntityFindByIdVisitor(groupId);
-		root.accept(findGroup);
-		return (UserGroup)findGroup.getEntity();
+
+	public UserEntity findEntity(UUID id) {
+		UserEntityFindByIdVisitor findEntity 
+			= new UserEntityFindByIdVisitor(id);
+		return (UserEntity)visitRoot(findEntity);
 	}
 	
-	public boolean containsUser(UUID id) {
-		UserEntityFindByIdVisitor findUser = new UserEntityFindByIdVisitor(id);
-		root.accept(findUser);
-		return findUser.getEntity() == null;
+	public UserEntity findEntity(String name) {
+		UserEntityFindByNameVisitor findEntity 
+			= new UserEntityFindByNameVisitor(name);
+		return (UserEntity)visitRoot(findEntity);
 	}
 	
-	public boolean containsUser(String name) {
-		UserEntityFindByNameVisitor findUser = new UserEntityFindByNameVisitor(name);
-		root.accept(findUser);
-		return findUser.getEntity() != null;
+	public boolean containsEntity(UUID id) {
+		return findEntity(id) != null;
+	}
+	
+	public boolean containsEntity(String name) {
+		return findEntity(name) != null;
 	}
 	
 	public int getTotalUsers() {
@@ -87,7 +93,7 @@ public class AdminControl {
 	}
 	
 	public double getPositiveMessagePercent() {
-		return (double) 
+		return (double)
 				visitRoot(new UserEntityPositiveMessagePercentVisitor());
 	}
 	

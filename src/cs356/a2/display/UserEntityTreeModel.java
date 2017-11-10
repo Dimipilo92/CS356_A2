@@ -8,8 +8,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import cs356.a2.admin_control.User;
 import cs356.a2.admin_control.UserEntity;
+import cs356.a2.admin_control.UserEntityPathFinder;
 import cs356.a2.admin_control.UserGroup;
 import cs356.a2.admin_control.visitors.UserEntityGetMembersVisitor;
 
@@ -57,8 +57,9 @@ public class UserEntityTreeModel implements TreeModel{
 	}
 	
 	public Object getParent(Object target) {
-		if (target == root) 
+		if (target == root)  {
 			return null;
+		}
 		UserGroup current = root;
 		return getParent((UserEntity)target, current);
 	}
@@ -70,8 +71,9 @@ public class UserEntityTreeModel implements TreeModel{
 		List<UserEntity> children = visitor.getMembers();
 		
 		for (int i = 0; i < children.size(); i++) {
-			if (children.get(i) == target)
+			if (children.get(i) == target) {
 				return current;
+			}
 			getParent(target, current);
 		}
 		
@@ -80,7 +82,7 @@ public class UserEntityTreeModel implements TreeModel{
 
 	@Override
 	public boolean isLeaf(Object node) {
-		return node instanceof User;
+		return !((UserEntity)node).isGroup();
 	}
 
 	@Override
@@ -90,31 +92,30 @@ public class UserEntityTreeModel implements TreeModel{
 
 	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
-		// TODO Auto-generated method stub
 		
 	}
-	/*
-	public void insertNodeInto(Object child, Object parent) {
-		UserGroup group = (UserGroup) parent;
-		group.addEntity((UserEntity) child);
-				
-		TreeModelEvent e = new TreeModelEvent(this, 
-                new Object[] {root});
+	
+	public void insertNodeInto(UserEntity child, UserGroup parent) {
+		
+		parent.addEntity(child);
+		
+		Object[] path =  UserEntityPathFinder.getPath(root, child).toArray();
+		int[] childIndices = getIndexedArray(parent.getMemberCount());
+		Object[] children = parent.getAllMembers().toArray();
+		TreeModelEvent e = new TreeModelEvent(this, path, childIndices, children);
+		
+		
 		for(int i = 0; i < treeModelListeners.size(); i++ ) {
 			treeModelListeners.get(i).treeNodesInserted(e);
 		}
 	}
-	*/
 	
-	public void insertNodeInto(UserEntity child, UserGroup parent) {
-		System.out.println(root.getMemberCount());
-		parent.addEntity((UserEntity) child);
-				
-		TreeModelEvent e = new TreeModelEvent(this, 
-                new Object[] {root});
-		for(int i = 0; i < treeModelListeners.size(); i++ ) {
-			treeModelListeners.get(i).treeNodesInserted(e);
+	private int[] getIndexedArray (int size){
+		int[] arr = new int[size];
+		for (int i = 0; i < size; i++) {
+			arr[i] = i;
 		}
+		return arr;
 	}
 
 }

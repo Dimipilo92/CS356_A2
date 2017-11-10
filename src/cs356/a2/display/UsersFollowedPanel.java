@@ -1,0 +1,83 @@
+package cs356.a2.display;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import cs356.a2.admin_control.AdminControl;
+import cs356.a2.admin_control.User;
+import cs356.a2.admin_control.UserEntity;
+
+public class UsersFollowedPanel extends JPanel implements ActionListener {
+
+	private static final long serialVersionUID = 1645719408944593094L;
+	private User user;
+	private AdminControl ac;
+
+	private JList<User> usersFollowedList;
+	private JButton followButton;
+	private JTextField followTextField;
+	
+	UsersFollowedPanel(User user){
+		this.user = user;
+		ac = AdminControl.getInstance();
+		
+		buildGUI();
+		usersFollowedList = new JList<User>(
+				new Vector<User>(user.getAllUsersFollowed()));
+		JScrollPane usersFollowedPane = new JScrollPane(usersFollowedList);
+		
+		followButton = new JButton("Follow");
+		followButton.addActionListener(this);
+		followTextField = new JTextField(30);
+		JPanel commands = new JPanel();
+		commands.add(followTextField, BorderLayout.LINE_START);
+		commands.add(followButton, BorderLayout.LINE_END);
+		
+		add(usersFollowedPane, BorderLayout.PAGE_START);
+		add(commands,BorderLayout.PAGE_END);
+	}
+	
+	private void buildGUI(){
+		followButton = new JButton("Tweet");
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		//e.getActionCommand()
+		String userName = followTextField.getText();
+		UserEntity entity = ac.findEntity(userName);
+		if (entity == null ||entity.isGroup()) {
+			JOptionPane.showMessageDialog(this, 
+					"That user does not exist." 
+					, "User Does Not Exist", 
+					JOptionPane.PLAIN_MESSAGE);
+			return;
+		}
+		User newUser = (User)entity;
+		if (user.isFollowing(newUser)) {
+			JOptionPane.showMessageDialog(this, 
+					"That user is already being followed." 
+					, "User Already Followed", 
+					JOptionPane.PLAIN_MESSAGE);
+			return;
+		}
+		user.follow(newUser);
+		refresh();
+		
+	}
+	
+	public void refresh() {
+		usersFollowedList.setListData(
+				new Vector<User>(user.getAllUsersFollowed()));
+	}
+}

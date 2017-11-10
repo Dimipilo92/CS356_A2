@@ -45,6 +45,10 @@ public class UserGroup implements UserEntity{
 		members.add(entity);
 	}
 	
+	public List<UserEntity> getAllMembers(){
+		return members;
+	}
+	
 	public UserEntity getMember(int pos) {
 		return members.get(pos);
 	}
@@ -54,8 +58,10 @@ public class UserGroup implements UserEntity{
 	}
 	
 	public void accept(UserEntityVisitor visitor) {
-		if (visitor.isDone())
+		if (visitor.isDone()) {
 			return;
+		}
+		
 		visitor.visit(this);
 		for (int i = 0; i < members.size(); i++) {
 			if (visitor.isDone())
@@ -67,5 +73,10 @@ public class UserGroup implements UserEntity{
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public boolean isGroup() {
+		return true;
 	}
 }

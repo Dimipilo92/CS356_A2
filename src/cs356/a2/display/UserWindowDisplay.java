@@ -1,28 +1,21 @@
 package cs356.a2.display;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
+import java.awt.BorderLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import cs356.a2.admin_control.User;
 
-public class UserWindowDisplay implements ActionListener{
+public class UserWindowDisplay {
 	private User user;
 	
 	private JFrame mainWindow;
+	private UserTweetPanel tweetPanel;
+	private UsersFollowedPanel usersFollowedPanel;
 	
-	
-	private JList followeeList;
-	private JButton followUserButton;
-	private JTextField followUserField;
 	
 	public UserWindowDisplay(){
+		user = new User();
 		buildGUI();
 	}
 	
@@ -32,13 +25,17 @@ public class UserWindowDisplay implements ActionListener{
 	}
 	
 	private void buildGUI() {
+		mainWindow = new JFrame(user.getName());
+		mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+		tweetPanel = new UserTweetPanel(user);
+		usersFollowedPanel = new UsersFollowedPanel(user);
+		mainWindow.getContentPane().add(tweetPanel, BorderLayout.PAGE_START);
+		mainWindow.getContentPane().add(usersFollowedPanel, BorderLayout.PAGE_END);
 		
-		
-		followUserButton = new JButton("Follow User");
 	}
 	
 	private void show() {
-		mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		mainWindow.pack();
 		mainWindow.setVisible(true);
 	}
@@ -51,11 +48,5 @@ public class UserWindowDisplay implements ActionListener{
 	            show();
 	        }
 	    });
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 }

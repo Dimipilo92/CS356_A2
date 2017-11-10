@@ -10,23 +10,22 @@ import cs356.a2.admin_control.UserGroup;
 public class UserEntityGetMembersVisitor implements UserEntityVisitor{
 	
 	private List<UserEntity> members;
+	boolean done = false;
 	
 	public UserEntityGetMembersVisitor () {
-		members = new ArrayList<>();
 	}
 	
 	@Override
 	public void visit(User u) {
-		return;
+		members = new ArrayList<UserEntity>();
+		done = true;
 	}
 
 	@Override
 	public void visit(UserGroup u) {
-		for (int i = 0; i < u.getMemberCount(); i++) {
-			members.add(u.getMember(i));
-		}
+		members = u.getAllMembers();
+		done = true;
 	}
-	
 	
 	public List<UserEntity> getMembers() {
 		return members;
@@ -39,8 +38,7 @@ public class UserEntityGetMembersVisitor implements UserEntityVisitor{
 
 	@Override
 	public boolean isDone() {
-		// TODO Auto-generated method stub
-		return true;
+		return done;
 	}
 	
 }

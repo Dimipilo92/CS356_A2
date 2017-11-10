@@ -3,19 +3,17 @@ package cs356.a2.admin_control;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.UUID;
 
 import cs356.a2.admin_control.visitors.UserEntityVisitor;
 
-public class User extends Observable implements UserEntity, Observer {
+public class User implements UserEntity{
 	
+	private UserObserver observer;
 	private UUID id;
 	private String name;
-	private List<Message> activity;
-	private List<Message> feed;
-	private List<User> followees;
+	private List<Message> messages;
+	private List<User> usersFollowed;
 	
 	public User(){
 		 instantiate("no_name");
@@ -27,11 +25,11 @@ public class User extends Observable implements UserEntity, Observer {
 	
 	private void instantiate(String name) {
 		id = UUID.randomUUID();
-		 this.name = name;
-		 feed = new ArrayList<>();
-		 activity = new ArrayList<>();
-		 followees = new ArrayList<>();
-		 this.addObserver(this);
+		this.name = name;
+		messages = new ArrayList<>();
+		usersFollowed = new ArrayList<>();
+		observer = new UserObserver();
+		observer.addObserver(observer);
 	}
 	
 	@Override
@@ -39,12 +37,24 @@ public class User extends Observable implements UserEntity, Observer {
 		return id;
 	}
 	
+	public List<Message> getFeed() {
+		return observer.getFeed();
+	}
+	
+	public Message getFeedItem(int pos) {
+		return observer.getFeed().get(pos);
+	}
+	
+	public int getFeedCount(int pos) {
+		return observer.getFeed().size();
+	}
+	
 	public Message getMessage(int pos) {
-		return activity.get(pos);
+		return messages.get(pos);
 	}
 	
 	public int getMessageCount() {
-		return activity.size();
+		return messages.size();
 	}
 	
 	@Override
@@ -57,48 +67,32 @@ public class User extends Observable implements UserEntity, Observer {
 		return this.name;
 	}
 	
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		Message message = (Message)arg;
-		feed.add(message);
-	}
-	
 	public void broadcastMessage(String message) {
-		this.setChanged();
+		
 		Message newMessage = new Message(id.toString(), name, message, new Date());
-		activity.add(newMessage);
-		this.notifyObservers(newMessage);
-	}
-	
-	/*
-	public void addFollower(User u) {
-		followers.add(u);
-		this.addObserver(u);
-	}
-	*/
-	
-	public void displayMessages() {
-		for (int i = 0; i < feed.size(); i++) {
-			System.out.println(feed.get(i).getMessage());
-		}
+		messages.add(newMessage);
+		observer.addMessage(newMessage);
 	}
 	
 	public void accept (UserEntityVisitor visitor) {
 		visitor.visit(this);
 	}
 	
+	public boolean isFollowing(User user) {
+		return usersFollowed.contains(user);
+	}
+	
 	public void follow(User user) {
-		followees.add(user);
-		user.addObserver(this);
+		usersFollowed.add(user);
+		user.getObserver().addObserver(observer);
 	}
 	
-	public User getFollowee(int pos) {
-		return followees.get(pos);
+	public User getUserFollowed(int pos) {
+		return usersFollowed.get(pos);
 	}
 	
-	public List<User> getAllFollowees() {
-		return followees;
+	public List<User> getAllUsersFollowed() {
+		return usersFollowed;
 	}
 	
 	@Override
@@ -106,4 +100,19 @@ public class User extends Observable implements UserEntity, Observer {
 		return name;
 	}
 	
+	public UserObserver getObserver() {
+		return observer;
+	}
+	
+	public void displayFeed() {
+		for (int i = 0; i < observer.getFeed().size(); i++) {
+			System.out.println(observer.getFeed().get(i));
+		}
+		
+	}
+
+	@Override
+	public boolean isGroup() {
+		return false;
+	}
 }

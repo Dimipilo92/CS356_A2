@@ -1,7 +1,5 @@
 package cs356.a2.admin_control.visitors;
 
-import java.util.UUID;
-
 import cs356.a2.admin_control.User;
 import cs356.a2.admin_control.UserEntity;
 import cs356.a2.admin_control.UserGroup;
@@ -20,7 +18,7 @@ public class UserEntityFindByNameVisitor implements UserEntityVisitor{
 
 	@Override
 	public void visit(User u) {
-		if (u.getName() == targetName) {
+		if (u.getName().equals(targetName)) {
 			target = u;
 			found = true;
 		}
@@ -28,7 +26,7 @@ public class UserEntityFindByNameVisitor implements UserEntityVisitor{
 
 	@Override
 	public void visit(UserGroup u) {
-		if (u.getName() == targetName) {
+		if (u.getName().equals(targetName)) {
 			target = u;
 			found = true;
 		}

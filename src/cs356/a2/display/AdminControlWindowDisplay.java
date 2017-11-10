@@ -4,24 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeSelectionModel;
 
 import cs356.a2.admin_control.AdminControl;
+import cs356.a2.admin_control.User;
 import cs356.a2.admin_control.UserEntity;
-import cs356.a2.admin_control.UserGroup;
-import cs356.a2.admin_control.visitors.UserEntityFindByNameVisitor;
-import cs356.a2.admin_control.visitors.UserEntityTotalGroupsVisitor;
-import cs356.a2.admin_control.visitors.UserEntityTotalUsersVisitor;
 
 public class AdminControlWindowDisplay implements ActionListener{
 	
@@ -56,6 +47,7 @@ public class AdminControlWindowDisplay implements ActionListener{
         //Create and set up the window.
         mainWindow = new JFrame("Admin Control");
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //mainWindow.setResizable(false);
 		
 		userTreePanel = new UserTreePanel(ac.getRoot());
 		
@@ -65,8 +57,9 @@ public class AdminControlWindowDisplay implements ActionListener{
         addUserButton.setActionCommand("addUser");
         addUserButton.addActionListener(this);
         JPanel addUserPanel = new JPanel();
-        addUserPanel.add(addUserTextField, BorderLayout.LINE_START);
-        addUserPanel.add(addUserButton, BorderLayout.LINE_END);
+        addUserPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        addUserPanel.add(addUserTextField);
+        addUserPanel.add(addUserButton);
         
         addGroupTextField = new JTextField(10);
         addGroupButton = new JButton("Add Group");
@@ -147,12 +140,10 @@ public class AdminControlWindowDisplay implements ActionListener{
 		switch(e.getActionCommand()) {
 			case "addUser":
 				String name = addUserTextField.getText();
-				System.out.println(ac.getRoot().getMemberCount());
-				System.out.println(ac.containsUser(name));
-				if(ac.containsUser(name)) {
+				if(ac.containsEntity(name)) {
 					String message = "User must be unique!";
 					JOptionPane.showMessageDialog(mainWindow, message,
-							 "Choose Different user", 
+							 "Choose Different User", 
 							JOptionPane.PLAIN_MESSAGE);
 					break;
 				}
@@ -164,7 +155,16 @@ public class AdminControlWindowDisplay implements ActionListener{
 				userTreePanel.addGroup(addGroupTextField.getText());
 				break;
 			case "openUserView":
-				UserWindowDisplay window = new UserWindowDisplay();
+				UserEntity selected = userTreePanel.getSelected();
+				if (selected == null || selected.isGroup()) {
+					String message = "Please select a user";
+					JOptionPane.showMessageDialog(mainWindow, message,
+							 "No User Selected", 
+							JOptionPane.PLAIN_MESSAGE);
+					break;
+				}
+				UserWindowDisplay window 
+					= new UserWindowDisplay((User)selected);
 				window.run();
 				break;
 			case "showUserTotal":
