@@ -14,6 +14,8 @@ public class User implements UserEntity{
 	private String name;
 	private List<Message> messages;
 	private List<User> usersFollowed;
+	private long creationTime;
+	// lastUpdatedTime is located in UserObserver
 	
 	public User(){
 		 instantiate("no_name");
@@ -30,6 +32,7 @@ public class User implements UserEntity{
 		usersFollowed = new ArrayList<>();
 		observer = new UserObserver();
 		observer.addObserver(observer);
+		creationTime = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -114,5 +117,14 @@ public class User implements UserEntity{
 	@Override
 	public boolean isGroup() {
 		return false;
+	}
+
+	@Override
+	public long getCreationTime() {
+		return creationTime;
+	}
+	
+	public long getLastUpdatedTime() {
+		return observer.getLastUpdated();
 	}
 }

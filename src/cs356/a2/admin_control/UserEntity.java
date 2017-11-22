@@ -9,6 +9,7 @@ public interface UserEntity {
 	public void setName(String name);
 	public String getName();
 	public boolean isGroup();
+	public long getCreationTime();
 	
 	public void accept(UserEntityVisitor visitor);
 }

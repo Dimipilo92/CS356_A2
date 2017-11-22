@@ -1,5 +1,7 @@
 package cs356.a2.display;
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -26,6 +28,7 @@ public class UserTreePanel extends JPanel {
         userTree.getSelectionModel().setSelectionMode
                 (TreeSelectionModel.SINGLE_TREE_SELECTION);
         JScrollPane userListPane = new JScrollPane(userTree);
+        userListPane.setPreferredSize(new Dimension(380,380));
         this.add(userListPane);
 	}
 	
@@ -49,7 +52,6 @@ public class UserTreePanel extends JPanel {
 		}
 		else
 			treeModel.insertNodeInto(new UserGroup(groupName),getGroup(u));
-		
 	}
 	
 	private UserGroup getGroup(UserEntity u) {

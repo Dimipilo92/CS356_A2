@@ -34,6 +34,8 @@ public class AdminControlWindowDisplay implements ActionListener{
 	private JButton showGroupTotalButton;
 	private JButton showMessagesTotalButton;
 	private JButton showPositivePercentageButton;
+	private JButton validateIdsButton;
+	private JButton lastUpdatedUserButton;
 	
 	public AdminControlWindowDisplay() {
         buildGUI();
@@ -99,24 +101,35 @@ public class AdminControlWindowDisplay implements ActionListener{
     	showPositivePercentageButton.setActionCommand("showPositivePercentage");
     	showPositivePercentageButton.addActionListener(this);
     	
+    	validateIdsButton = new JButton("Validate Ids");
+    	validateIdsButton.setActionCommand("validateIds");
+    	validateIdsButton.addActionListener(this);
+    	
+    	lastUpdatedUserButton = new JButton("Last Updated User");
+    	lastUpdatedUserButton.setActionCommand("lastUpdatedUser");
+    	lastUpdatedUserButton.addActionListener(this);
+    	
     	JPanel displayStatisticsPanel = new JPanel();
-    	displayStatisticsPanel.setLayout(new GridLayout(2,2,10,10));
+    	displayStatisticsPanel.setLayout(new GridLayout(3,2,10,10));
     	displayStatisticsPanel.add(showUserTotalButton);
     	displayStatisticsPanel.add(showGroupTotalButton);
     	displayStatisticsPanel.add(showMessagesTotalButton);
     	displayStatisticsPanel.add(showPositivePercentageButton);
+    	displayStatisticsPanel.add(validateIdsButton);
+    	displayStatisticsPanel.add(lastUpdatedUserButton);
     	displayStatisticsPanel.setBorder(BorderFactory.createCompoundBorder(
-        		new TitledBorder("Statistics"),new EmptyBorder(10, 10, 10, 10)));
+        		new TitledBorder("Statistics"),
+        		new EmptyBorder(10, 10, 10, 10)));
     	
-    	JPanel AdminPanel  = new JPanel();
-    	AdminPanel.setLayout(new BoxLayout(AdminPanel, BoxLayout.PAGE_AXIS));
-    	AdminPanel.add(userListOptionsPanel);
-    	AdminPanel.add(displayStatisticsPanel);
-    	AdminPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+    	JPanel adminPanel  = new JPanel();
+    	adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.PAGE_AXIS));
+    	adminPanel.add(userListOptionsPanel);
+    	adminPanel.add(displayStatisticsPanel);
+    	adminPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
         mainWindow.getContentPane().add(userTreePanel,BorderLayout.LINE_START);
-        mainWindow.getContentPane().add(AdminPanel,BorderLayout.CENTER);
-        
+        mainWindow.getContentPane().add(adminPanel,BorderLayout.CENTER);
+        mainWindow.setResizable(false);
 	}
 	
 	private void show() {
@@ -187,6 +200,31 @@ public class AdminControlWindowDisplay implements ActionListener{
 						"Percentage of Positive Messages: " 
 								+ ac.getPositiveMessagePercent(), 
 						"Positive Messages", JOptionPane.PLAIN_MESSAGE);
+				break;
+			case "validateIds":
+				String message;
+				if (ac.isValid()) {
+					message = "All ids are unique.";
+				}
+				else {
+					message = "Non-unique ids present!";
+				}
+				JOptionPane.showMessageDialog(mainWindow, 
+						message, "Valid Ids",
+						JOptionPane.PLAIN_MESSAGE);
+				break;
+			case "lastUpdatedUser":
+				User u = ac.getLastUpdatedUser();
+				if (u == null) {
+					message = "N/A";
+				}
+				else {
+					String time = TimeStampDisplay.display(u.getLastUpdatedTime());
+					message = u.getName() + " (Updated " + time + ")";
+				}
+				JOptionPane.showMessageDialog(mainWindow, 
+						message, "Last Udated User", 
+						JOptionPane.PLAIN_MESSAGE);
 				break;
 		}
 	}

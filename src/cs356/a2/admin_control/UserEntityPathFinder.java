@@ -42,10 +42,7 @@ public class UserEntityPathFinder {
 		}
 		// node does not exist in tree
 		return path;
-		
 	}
-	
-	
 	
 	private static List<UserEntity> getMembers(UserEntity entity) {
 		UserEntityGetMembersVisitor visitor = new UserEntityGetMembersVisitor();

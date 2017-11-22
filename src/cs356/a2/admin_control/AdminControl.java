@@ -97,8 +97,19 @@ public class AdminControl {
 				visitRoot(new UserEntityPositiveMessagePercentVisitor());
 	}
 	
+	public boolean isValid() {
+		return (boolean)
+				visitRoot(new UserEntityValidIDVisitor());
+	}
+
+	public User getLastUpdatedUser() {
+		return (User)
+				visitRoot(new UserEntityLastUpdatedVisitor());
+	}
+	
 	private Object visitRoot(UserEntityVisitor visitor) {
 		root.accept(visitor);
 		return visitor.get();
 	}
+
 }

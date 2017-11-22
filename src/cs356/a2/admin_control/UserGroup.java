@@ -9,6 +9,7 @@ import cs356.a2.admin_control.visitors.UserEntityVisitor;
 public class UserGroup implements UserEntity{
 	private UUID id = UUID.randomUUID();
 	private String name;
+	private long creationTime;
 	
 	private List<UserEntity> members;
 	
@@ -24,6 +25,7 @@ public class UserGroup implements UserEntity{
 		id = UUID.randomUUID();
 		this.name = name;
 		members = new ArrayList<>();
+		creationTime = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -78,5 +80,10 @@ public class UserGroup implements UserEntity{
 	@Override
 	public boolean isGroup() {
 		return true;
+	}
+
+	@Override
+	public long getCreationTime() {
+		return creationTime;
 	}
 }

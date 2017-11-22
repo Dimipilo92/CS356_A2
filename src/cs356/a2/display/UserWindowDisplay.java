@@ -25,14 +25,16 @@ public class UserWindowDisplay {
 	}
 	
 	private void buildGUI() {
-		mainWindow = new JFrame(user.getName());
+		String time = TimeStampDisplay.display(user.getCreationTime());
+		String title = user.getName() + " (Created: " + time + ")";
+		mainWindow = new JFrame(title);
 		mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		tweetPanel = new UserTweetPanel(user);
 		usersFollowedPanel = new UsersFollowedPanel(user);
 		mainWindow.getContentPane().add(tweetPanel, BorderLayout.PAGE_START);
 		mainWindow.getContentPane().add(usersFollowedPanel, BorderLayout.PAGE_END);
-		
+		mainWindow.setResizable(false);
 	}
 	
 	private void show() {

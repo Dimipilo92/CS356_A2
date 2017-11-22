@@ -8,9 +8,11 @@ import java.util.Observer;
 public class UserObserver extends Observable implements Observer {
 
 	private List<Message> feed;
+	private long lastUpdatedTime;
 	
 	public UserObserver() {
 		feed = new ArrayList<>();
+		lastUpdatedTime = System.currentTimeMillis();
 	}
 	
 	public void addMessage(Message m) {
@@ -22,9 +24,14 @@ public class UserObserver extends Observable implements Observer {
 	public void update(Observable o, Object arg) {
 		Message message = (Message)arg;
 		feed.add(message);
+		lastUpdatedTime = System.currentTimeMillis();
 	}
 	
 	public List<Message> getFeed() {
 		return feed;
+	}
+	
+	public long getLastUpdated() {
+		return lastUpdatedTime;
 	}
 }

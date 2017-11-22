@@ -5,11 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import cs356.a2.admin_control.Message;
 import cs356.a2.admin_control.User;
@@ -37,8 +41,12 @@ public class UserTweetPanel extends JPanel implements ActionListener{
 		commands.add(tweetMessageTextField, BorderLayout.LINE_START);
 		commands.add(tweetMessageButton, BorderLayout.LINE_END);
 		
-		add(messagePane, BorderLayout.PAGE_START);
-		add(commands,BorderLayout.PAGE_END);
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		add(messagePane);
+		add(commands);
+		setBorder(BorderFactory.createCompoundBorder(
+        		new TitledBorder("Send Message"),
+        		new EmptyBorder(10, 10, 10, 10)));
 	}
 	
 	private void buildGUI(){

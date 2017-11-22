@@ -5,12 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import cs356.a2.admin_control.AdminControl;
 import cs356.a2.admin_control.User;
@@ -42,8 +46,12 @@ public class UsersFollowedPanel extends JPanel implements ActionListener {
 		commands.add(followTextField, BorderLayout.LINE_START);
 		commands.add(followButton, BorderLayout.LINE_END);
 		
-		add(usersFollowedPane, BorderLayout.PAGE_START);
-		add(commands,BorderLayout.PAGE_END);
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		add(usersFollowedPane);
+		add(commands);
+		setBorder(BorderFactory.createCompoundBorder(
+        		new TitledBorder("Users Followed"),
+        		new EmptyBorder(10, 10, 10, 10)));
 	}
 	
 	private void buildGUI(){
